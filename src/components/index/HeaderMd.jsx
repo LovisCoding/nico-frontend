@@ -1,0 +1,33 @@
+import {Box, Button, Grid, Stack} from "@mui/material";
+import {PiInstagramLogoThin} from "react-icons/pi";
+
+export default function HeaderMd() {
+    const sxText = {
+        '&:hover' :{
+            textDecoration: 'underline'
+        },
+        width: 'fit-content',
+        pl:1,
+        pr:0,
+        py:0.5,
+        justifyContent: 'flex-start',
+
+    }
+    const goTo = (link) => {
+        router.push(link ?? '')
+        return
+    }
+    return (
+        <Stack direction={'column'} pl={2} mt={3}>
+            <Box component={'a'} href={'#'} pb={3}>
+                <img src={'/logo.png'} alt={'logo'} style={{width: '60px'}}/>
+            </Box>
+            <Button variant={'h6'} component={'a'} sx={sxText} onClick={() => goTo('/')} >Accueil</Button>
+            <Button variant={'h6'} component={'a'} sx={sxText} onClick={() => goTo('/test')} >test</Button>
+            <Button variant={'h6'} component={'a'} sx={sxText} onClick={() => goTo('/test')} >test</Button>
+            <Button component={'p'} sx={{...sxText, minWidth:0, ml:'16px', p:0}} onClick={() => goTo('https://www.instagram.com/ncdet_/')} >
+                <PiInstagramLogoThin />
+            </Button>
+        </Stack>
+    )
+}
