@@ -5,24 +5,31 @@ import Zoom from "react-medium-image-zoom";
 import HeaderSm from "@/components/index/HeaderSm";
 import HeaderMd from "@/components/index/HeaderMd";
 import MyListImages from "@/components/index/MyListImages";
+import Loader from "@/components/Loader";
 export default function PortfolioPage() {
     const [images, setImages] = useState([]);
     const isSm = useMediaQuery(theme => theme.breakpoints.down('md'))
     const isXs = useMediaQuery(theme => theme.breakpoints.down('sm'))
+    const [loading, setLoading] = useState(true);
     useEffect(() => {
-        const fetchImages = async () => {
+        const fetchImages =  () => {
             try {
-                const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/list-images`);
-                setImages(res.data.images); // res.data.images = [url1, url2, ...]
+                  axios.get(`/api/sections/name?name=Accueil`).then((res) => {
+                      const paths = res.data.images.map(img => "/api/"+img.image.url);
+                      setImages(paths);
+
+                  });
+
             } catch (err) {
-                console.error('Erreur chargement images');
+                console.error('Erreur chargement images', err);
             }
         };
         fetchImages();
     }, []);
 
-
     return (
+        <>
+            {loading && <Loader/>}
         <Grid container>
             {!isSm ? (
                 <>
@@ -36,16 +43,9 @@ export default function PortfolioPage() {
              </Grid>
             )}
             <Grid size={isSm ? 12 : 11} pr={4} pl={isSm ? 2 : 1} pt={3}>
-                <MyListImages images={images} isXs={isXs} />
+                <MyListImages images={images} isXs={isXs} setLoading={setLoading} loading={loading} />
             </Grid>
         </Grid>
-        /*<div style={{ padding: 20 }}>
-            <h2>Mon Portfolio</h2>
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10 }}>
-                {images.map((url, i) => (
-                    <img key={i} src={url} alt={`img-${i}`} style={{ width: 200, borderRadius: 8 }} />
-                ))}
-            </div>
-        </div>*/
+        </>
     );
 }

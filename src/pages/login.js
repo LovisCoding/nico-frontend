@@ -10,9 +10,9 @@ export default function LoginPage() {
 
     const handleLogin = async () => {
         try {
-            const res = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/login`, { email, password });
+            const res = await axios.post(`/api/auth/login`, { name: email, password });
             localStorage.setItem('token', res.data.token);
-            router.push('/upload');
+            await router.push('/upload');
         } catch (err) {
             setError('Connexion échouée. Vérifie tes identifiants.');
         }
