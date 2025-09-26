@@ -25,11 +25,11 @@ export default function HeaderMd() {
             </Box>
             <Button variant={'h6'} component={'a'} sx={sxText} onClick={() => goTo('/')} >Accueil</Button>
             {/*<Button variant={'h6'} component={'a'} sx={sxText} onClick={() => goTo('/shooting')} >Shooting</Button>*/}
-          <Stack direction={'row'} alignItems={'center'} display={'flex'} justifyContent={'space-around'} px={2}>
+          <Stack direction={'row'} alignItems={'center'} display={'flex'} justifyContent={'flex-start'} >
             <Button component={'p'} sx={{...sxText, minWidth:0,  p:0}} onClick={() => goTo('https://www.instagram.com/ncdet_/')} >
               <PiInstagramLogoThin color={'black'}/>
             </Button>
-            <Button component={'p'} sx={{...sxText, minWidth:0, p:0}} onClick={() => goTo('mailto:edetnicolas1@gmail.com')} >
+            <Button component={'p'} sx={{...sxText, minWidth:0,  pl:1}} onClick={() => goTo('mailto:edetnicolas1@gmail.com')} >
               <PiEnvelopeLight color={'grey'} />
             </Button>
           </Stack>
