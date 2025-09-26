@@ -1,6 +1,7 @@
 import {ImageList, ImageListItem} from "@mui/material";
 import Zoom from "react-medium-image-zoom";
 import {useEffect} from "react";
+import Image from 'next/image';
 
 export default function MyListImages({ images, isXs, setLoading, loading }) {
     useEffect(() => {
@@ -20,7 +21,7 @@ export default function MyListImages({ images, isXs, setLoading, loading }) {
             {!loading && images.map((url, index) => (
                 <ImageListItem key={index}>
                     <Zoom>
-                        <img src={url} alt="" loading="lazy" />
+                        <Image src={url} alt="" loading="lazy" />
                     </Zoom>
                 </ImageListItem>
             ))}
