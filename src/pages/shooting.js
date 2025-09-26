@@ -4,6 +4,7 @@ import HeaderSm from "@/components/index/HeaderSm";
 import {useEffect, useState} from "react";
 import axios from "axios";
 import Zoom from "react-medium-image-zoom";
+import Image from 'next/image';
 
 export default function Shooting() {
     const isSm = useMediaQuery(theme => theme.breakpoints.down('md'))
@@ -34,9 +35,9 @@ export default function Shooting() {
                     <Typography variant='h2'>{shoot.title}</Typography>
                     <Grid container>
                         {shoot.images.map((image, index) => (
-                            <Grid size={{ xs: 12, sm: 6, md: 4 }}>
+                            <Grid size={{ xs: 12, sm: 6, md: 4 }} key={index}>
                                 <Zoom>
-                                    <img src={'/api/' +image} alt="" loading="lazy" />
+                                    <Image src={'/api/' +image} alt="" loading="lazy" />
                                 </Zoom>
                             </Grid>
                         ))}

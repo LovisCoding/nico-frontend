@@ -7,7 +7,7 @@ export default function HeaderSm() {
 
     const links = [
         { label: "Accueil", to: "/" },
-        { label: "Test", to: "/test" },
+        /*{ label: "Shootings", to: "/shooting" },*/
         { label: "Instagram", to: "https://www.instagram.com/ncdet_/" },
     ];
 

@@ -6,6 +6,7 @@ import HeaderSm from "@/components/index/HeaderSm";
 import HeaderMd from "@/components/index/HeaderMd";
 import MyListImages from "@/components/index/MyListImages";
 import Loader from "@/components/Loader";
+import api from '@/lib/api';
 export default function PortfolioPage() {
     const [images, setImages] = useState([]);
     const isSm = useMediaQuery(theme => theme.breakpoints.down('md'))
@@ -14,7 +15,7 @@ export default function PortfolioPage() {
     useEffect(() => {
         const fetchImages =  () => {
             try {
-                  axios.get(`/api/sections/name?name=Accueil`).then((res) => {
+                  api.get(`sections/name?name=Accueil`).then((res) => {
                       const paths = res.data.images.map(img => "/api/"+img.image.url);
                       setImages(paths);
 

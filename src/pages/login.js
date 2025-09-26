@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import axios from 'axios';
 import { useRouter } from 'next/router';
+import api from '@/lib/api';
 
 export default function LoginPage() {
     const [email, setEmail] = useState('');
@@ -10,8 +11,9 @@ export default function LoginPage() {
 
     const handleLogin = async () => {
         try {
-            const res = await axios.post(`/api/auth/login`, { name: email, password });
-            localStorage.setItem('token', res.data.token);
+            const res = await api.post(`auth/login`, { name: email, password });
+            localStorage.setItem('token', res.data.access_token);
+            api.defaults.headers.common['Authorization'] = `Bearer ${res.data.access_token}`;
             await router.push('/upload');
         } catch (err) {
             setError('Connexion échouée. Vérifie tes identifiants.');
