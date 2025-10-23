@@ -1,6 +1,5 @@
 /** @type {import('next').NextConfig} */
-const nextConfig = {
-    output: 'standalone',
+const nextConfig = {xz
     async rewrites() {
         return [
             {
