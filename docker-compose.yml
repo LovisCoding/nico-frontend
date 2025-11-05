@@ -6,7 +6,7 @@ services:
       context: .
       dockerfile: Dockerfile
       args:
-        API_URL: ${NEXT_PUBLIC_API_URL} # pris depuis ton .env local
+        API_URL: ${VITE_API_URL} # pris depuis ton .env.production local
     image: nico-front:latest
     environment:
       - PORT=3000
