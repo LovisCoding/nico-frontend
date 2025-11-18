@@ -12,10 +12,9 @@ import {
   TextField, Button, Dialog, DialogTitle, DialogContent, DialogActions,
 } from '@mui/material';
 import { useEffect } from 'react';
-import axios from 'axios';
-import api from '@/lib/api';
 import { PiUploadSimple } from 'react-icons/pi';
-import TransferListDialog from '@/components/upload/TransferListDialog';
+import api from '../lib/api.js';
+import TransferListDialog from '../components/upload/TransferListDialog.jsx';
 
 export default function Upload() {
 const [rows, setRows] = React.useState([]);
