@@ -1,4 +1,4 @@
-import {ImageList, ImageListItem} from "@mui/material";
+import  {ImageList, ImageListItem} from "@mui/material";
 import Zoom from "react-medium-image-zoom";
 import {useEffect} from "react";
 

@@ -5,7 +5,8 @@ import { createTheme, CssBaseline, ThemeProvider } from '@mui/material';
 import App from './pages/App.jsx';
 import 'react-medium-image-zoom/dist/styles.css'
 import Login from './pages/Login.jsx';
-import Upload from './pages/Upload.jsx';
+import Upload from './pages/Upload/Upload.jsx';
+import Shooting from './pages/Shooting.jsx';
 
 const theme = createTheme({
   typography: {
@@ -35,6 +36,7 @@ createRoot(document.getElementById('root')).render(
           <Route path="/" element={<App />} />
           <Route path="/login" element={<Login />} />
           <Route path="/upload" element={<Upload/>} />
+          <Route path="/shooting" element={<Shooting/>} />
         </Routes>
       </BrowserRouter>
     </ThemeProvider>
