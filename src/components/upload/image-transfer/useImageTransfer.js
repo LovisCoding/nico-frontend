@@ -133,34 +133,56 @@ export default function useImageTransfer({ sectionId, open }) {
 
   const moveRightItemUp = (index) => {
     setSectionImages((prev) => {
+      // Sécurité : index hors bornes
       if (index <= 0 || index >= prev.length) return prev;
+
+      const prevItem = prev[index - 1];
+      const currentItem = prev[index];
+
+      // Copie IMMÉDIATE du tableau et swap (optimistic update)
       const copy = [...prev];
       [copy[index - 1], copy[index]] = [copy[index], copy[index - 1]];
-      const newItems = reindexOrders(copy);
 
-      // Mise à jour optimiste + appel PATCH pour persister l'ordre
-      const betweenSectionImages = newItems.map((it) => it.id);
-      const idImageToChangeOrder = newItems[index - 1]?.id;
-
+      // Appel API en "side-effect"
       setLoading(true);
       api
         .patch("sections-images/", {
           idSection: sectionId,
-          betweenSectionImages,
-          idImageToChangeOrder,
+          changeWith : prevItem.imageId,
+          idImageToChangeOrder : currentItem.imageId,
+          typeMove: "up",
         })
-        .then(() => setLoading(false))
+        .then((res) => {
+          const newOrder = res.data.order;
+
+          // On met à jour l'order de l'image concernée
+          setSectionImages((images) =>
+            images.map((img) =>
+              img.imageId === currentItem.imageId
+                ? { ...img, order: newOrder }
+                : img
+            )
+          );
+        })
         .catch((err) => {
           console.error("Erreur lors du reordonnancement:", err);
+
+          // Si tu veux revenir à l'état avant le swap en cas d’erreur :
+          setSectionImages(prev); // on rétablit l’ancien tableau
+        })
+        .finally(() => {
           setLoading(false);
         });
 
-      return newItems;
+      // C'EST CE return QUI COMPTE pour React
+      return copy;
     });
   };
 
 
-const moveRightItemDown = (index) => {
+
+
+  const moveRightItemDown = (index) => {
   setSectionImages((prev) => {
     if (index < 0 || index >= prev.length - 1) return prev;
     const copy = [...prev];
