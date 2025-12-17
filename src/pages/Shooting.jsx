@@ -9,7 +9,7 @@ import {
 } from "@mui/material";
 
 import { useEffect, useState } from "react";
-import api from "../lib/api.js";
+import axios from "axios";
 import Zoom from "react-medium-image-zoom";
 import HeaderMd from "../components/index/HeaderMd.jsx";
 import HeaderSm from "../components/index/HeaderSm.jsx";
@@ -23,8 +23,8 @@ export default function Shooting() {
 
   useEffect(() => {
     document.title = "Nicolas Edet - Shooting";
-    api
-      .get("sections/shootings")
+    axios
+      .get("/api/sections/shootings")
       .then((r) => setData(Array.isArray(r.data) ? r.data : []))
       .catch((e) => console.log(e));
   }, []);

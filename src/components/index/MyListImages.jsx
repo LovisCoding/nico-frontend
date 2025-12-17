@@ -22,8 +22,8 @@ export default function MyListImages({ images, isXs, setLoading, loading }) {
     return (
         <ImageList variant="masonry" cols={isXs ? 2 : 3} gap={8}>
             {!loading && images.map((url, index) => (
-                <Zoom>
-                    <ImageListItem key={index}>
+                <Zoom key={index}>
+                    <ImageListItem>
                         <img src={url} alt="" loading="lazy" />
                     </ImageListItem>
                 </Zoom>

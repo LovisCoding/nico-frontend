@@ -22,7 +22,7 @@ export default function HeaderMd() {
   }
   return (
     <Stack direction={'column'} px={2} mt={1} sx={{ position: 'sticky', top: '8px' }}>
-      <Box component={'a'} href={'#'} pb={3} pl={1} onClick={goTo('/')}>
+      <Box component={'a'} href={'#'} pb={3} pl={1} onClick={(e) => { e.preventDefault(); goTo('/'); }}>
         <img src={'/logo.png'} alt={'logo'} style={{ width: '80px' }} />
       </Box>
       <Button variant={'h6'} component={'a'} sx={sxText} onClick={() => goTo('/')} >Accueil</Button>
