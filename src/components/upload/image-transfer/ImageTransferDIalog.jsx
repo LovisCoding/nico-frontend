@@ -8,11 +8,14 @@ import {
   Button,
   CircularProgress,
   Grid,
+  useMediaQuery,
+  useTheme,
 } from "@mui/material";
 
 import useImageTransfer from "./useImageTransfer.js";
 import ImageTransferList from "./ImageTransferList.jsx";
 import SectionImagesReorderList from './SectionImagesReorderList.jsx';
+import api from "../../../lib/api.js";
 
 export default function ImageTransferDialog({ sectionId, open, onClose, onSave }) {
   const {
@@ -25,8 +28,10 @@ export default function ImageTransferDialog({ sectionId, open, onClose, onSave }
     toggle,
     transferRight,
     transferLeft,
-    moveRightItemDown,
     moveRightItemUp,
+    moveRightItemDown,
+    reorderSectionImages,
+    refetch,
   } = useImageTransfer({ sectionId, open });
 
   const handleCancel = () => onClose?.();
@@ -53,6 +58,16 @@ export default function ImageTransferDialog({ sectionId, open, onClose, onSave }
     console.warn("Aucun onSave fourni : payload prêt mais non envoyé.", payload);
   };
 
+  /* Responsive Logic */
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("md")); // "md" threshold: < 900px => stack vertically
+
+  // Dynamic props for the lists
+  const listProps = {
+    width: isMobile ? "100%" : 300,
+    height: isMobile ? 300 : 400,
+  };
+
   return (
     <Dialog open={open} onClose={onClose} maxWidth="lg" fullWidth>
       <DialogTitle>Gérer les images de la section {sectionId}</DialogTitle>
@@ -63,18 +78,30 @@ export default function ImageTransferDialog({ sectionId, open, onClose, onSave }
             <CircularProgress />
           </div>
         ) : (
-          <Grid container spacing={2} justifyContent="center" alignItems="center">
-            <Grid item>
+          <Grid
+            container
+            spacing={2}
+            justifyContent="center"
+            alignItems="center"
+            direction={isMobile ? "column" : "row"} // Stack on mobile
+          >
+            <Grid item xs={12} md="auto" sx={{ width: isMobile ? '100%' : 'auto' }}>
               <ImageTransferList
                 title="Images Disponibles"
                 items={availableImages}
                 checked={checked}
                 onToggle={toggle}
+                onDelete={(id) => {
+                  api.delete(`images/${id}`).then(() => {
+                    refetch();
+                  })
+                }}
+                {...listProps}
               />
             </Grid>
 
-            <Grid item>
-              <Grid container direction="column" alignItems="center">
+            <Grid item xs={12} md="auto">
+              <Grid container direction={isMobile ? "row" : "column"} alignItems="center" spacing={1}>
                 <Button
                   sx={{ my: 0.5 }}
                   variant="outlined"
@@ -83,7 +110,7 @@ export default function ImageTransferDialog({ sectionId, open, onClose, onSave }
                   disabled={leftChecked.length === 0}
                   aria-label="move selected right"
                 >
-                  &gt;
+                  {isMobile ? "Ajouter ↓" : ">"}
                 </Button>
                 <Button
                   sx={{ my: 0.5 }}
@@ -93,20 +120,20 @@ export default function ImageTransferDialog({ sectionId, open, onClose, onSave }
                   disabled={rightChecked.length === 0}
                   aria-label="move selected left"
                 >
-                  &lt;
+                  {isMobile ? "Retirer ↑" : "<"}
                 </Button>
               </Grid>
             </Grid>
 
-            <Grid item>
+            <Grid item xs={12} md="auto" sx={{ width: isMobile ? '100%' : 'auto' }}>
               <SectionImagesReorderList
                 title="Images de la Section (Ordre)"
                 items={sectionImages}
                 checked={checked}
                 onToggle={toggle}
-                onMoveUp={moveRightItemUp}
-                onMoveDown={moveRightItemDown}
+                onReorder={reorderSectionImages}
                 showOrder
+                {...listProps}
               />
             </Grid>
           </Grid>

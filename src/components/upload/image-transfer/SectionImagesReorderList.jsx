@@ -1,4 +1,3 @@
-// src/components/image-transfer/SectionImagesReorderList.jsx
 import React from "react";
 import {
   Card,
@@ -6,106 +5,88 @@ import {
   Divider,
   List,
   ListItem,
-  ListItemIcon,
-  ListItemText,
-  Checkbox,
-  IconButton,
-  Stack,
 } from "@mui/material";
+import {
+  DndContext,
+  closestCenter,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+} from '@dnd-kit/core';
+import {
+  arrayMove,
+  SortableContext,
+  sortableKeyboardCoordinates,
+  verticalListSortingStrategy,
+} from '@dnd-kit/sortable';
+import { restrictToVerticalAxis } from '@dnd-kit/modifiers';
 
-
-import { getUniqueId, toDisplayImage } from "./transferUtils.js";
-import { PiArrowDown, PiArrowUp } from 'react-icons/pi';
+import { getUniqueId } from "./transferUtils.js";
+import SortableSectionImageItem from "./SortableSectionImageItem.jsx";
 
 export default function SectionImagesReorderList({
-                                                   title,
-                                                   items,
-                                                   checked,
-                                                   onToggle,
-                                                   onMoveUp,
-                                                   onMoveDown,
-                                                   showOrder = true,
-                                                   width = 300,
-                                                   height = 400,
-                                                 }) {
+  title,
+  items,
+  checked,
+  onToggle,
+  onReorder,
+  showOrder = true,
+  width = 300,
+  height = 400,
+}) {
+  const sensors = useSensors(
+    useSensor(PointerSensor),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  );
+
+  function handleDragEnd(event) {
+    const { active, over } = event;
+
+    if (over && active.id !== over.id) {
+      const oldIndex = items.findIndex((item) => getUniqueId(item) === active.id);
+      const newIndex = items.findIndex((item) => getUniqueId(item) === over.id);
+
+      const newItems = arrayMove(items, oldIndex, newIndex);
+      onReorder(newItems);
+    }
+  }
+
   return (
     <Card>
       <CardHeader sx={{ px: 2, py: 1 }} title={title} />
       <Divider />
-      <List
-        sx={{ width, height, bgcolor: "background.paper", overflow: "auto" }}
-        dense
-        component="div"
-        role="list"
+      <DndContext
+        sensors={sensors}
+        collisionDetection={closestCenter}
+        onDragEnd={handleDragEnd}
+        modifiers={[restrictToVerticalAxis]}
       >
-        {items.map((value, index) => {
-          const uniqueId = getUniqueId(value);
-          const labelId = `transfer-list-item-${uniqueId}-label`;
-          const isChecked = checked.some((x) => getUniqueId(x) === uniqueId);
-          const image = toDisplayImage(value);
-
-          return (
-            <ListItem
-              key={uniqueId}
-              role="listitem"
-              onClick={() => onToggle(value)}
-              button
-              secondaryAction={
-                <Stack direction="row" spacing={0.5}>
-                  <IconButton
-                    size="small"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      onMoveUp(index);
-                    }}
-                    disabled={index === 0}
-                    aria-label="move up"
-                  >
-                    <PiArrowUp/>
-                  </IconButton>
-
-                  <IconButton
-                    size="small"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      onMoveDown(index);
-                    }}
-                    disabled={index === items.length - 1}
-                    aria-label="move down"
-                  >
-                    <PiArrowDown/>
-                  </IconButton>
-                </Stack>
-              }
-            >
-              <ListItemIcon>
-                <Checkbox
-                  checked={isChecked}
-                  tabIndex={-1}
-                  disableRipple
-                  inputProps={{ "aria-labelledby": labelId }}
-                />
-              </ListItemIcon>
-
-              <ListItemText
-                id={labelId}
-                primary={
-                  <>
-                    {showOrder && (
-                      <span style={{ fontWeight: 700, marginRight: 8 }}>
-                        {value.order}
-                      </span>
-                    )}
-                    {image?.url}
-                  </>
-                }
-                secondary={image?.title || `ID: ${image?.id}`}
+        <List
+          sx={{ width, height, bgcolor: "background.paper", overflowY: "auto", overflowX: "hidden" }}
+          dense
+          component="div"
+          role="list"
+        >
+          <SortableContext
+            items={items.map(getUniqueId)}
+            strategy={verticalListSortingStrategy}
+          >
+            {items.map((value) => (
+              <SortableSectionImageItem
+                key={getUniqueId(value)}
+                item={value}
+                checked={checked}
+                onToggle={onToggle}
+                showOrder={showOrder}
               />
-            </ListItem>
-          );
-        })}
-        <ListItem />
-      </List>
+            ))}
+          </SortableContext>
+          <ListItem />
+        </List>
+      </DndContext>
     </Card>
   );
 }

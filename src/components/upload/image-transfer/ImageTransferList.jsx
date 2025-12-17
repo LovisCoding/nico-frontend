@@ -1,17 +1,19 @@
 // src/components/image-transfer/ImageTransferList.jsx
 import React from "react";
-import { Card, CardHeader, Divider, List, ListItem, ListItemIcon, ListItemText, Checkbox } from "@mui/material";
+import { Card, CardHeader, Divider, List, ListItem, ListItemIcon, ListItemText, Checkbox, IconButton } from "@mui/material";
+import { PiTrash } from "react-icons/pi";
 import { getUniqueId, toDisplayImage } from "./transferUtils.js";
 
 export default function ImageTransferList({
-                                            title,
-                                            items,
-                                            checked,
-                                            onToggle,
-                                            showOrder = false,
-                                            width = 300,
-                                            height = 400,
-                                          }) {
+  title,
+  items,
+  checked,
+  onToggle,
+  showOrder = false,
+  width = 300,
+  height = 400,
+  onDelete,
+}) {
   return (
     <Card>
       <CardHeader sx={{ px: 2, py: 1 }} title={title} />
@@ -58,6 +60,20 @@ export default function ImageTransferList({
                 }
                 secondary={image?.title || `ID: ${image?.id}`}
               />
+              {onDelete && (
+                <IconButton
+                  size="small"
+                  color="error"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    if (window.confirm("Attention cela va supprimer cette image pour toutes les sections")) {
+                      onDelete(image.id);
+                    }
+                  }}
+                >
+                  <PiTrash />
+                </IconButton>
+              )}
             </ListItem>
           );
         })}

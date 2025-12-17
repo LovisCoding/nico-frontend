@@ -42,7 +42,7 @@ export default function useImageTransfer({ sectionId, open }) {
     const requests = api
       .post("/sections-images", {
         sectionId,
-        imageIds: newSectionItems.map(({ imageId }) => (imageId )),
+        imageIds: newSectionItems.map(({ imageId }) => (imageId)),
       })
       .then((res) => {
         const created = res.data ?? [];
@@ -92,39 +92,7 @@ export default function useImageTransfer({ sectionId, open }) {
     setChecked((prev) => not(prev, rightChecked));
   };
 
-  useEffect(() => {
-    if (!open) return;
 
-    const fetchImages = async () => {
-      setLoading(true);
-      try {
-        const [allResponse, sectionResponse] = await Promise.all([
-          api.get("images"),
-          api.get(`sections-images/${sectionId}`),
-        ]);
-
-        const all = allResponse.data ?? [];
-        const section = sectionResponse.data ?? [];
-
-        setAllImages(all);
-        const sortedSection = [...section].sort((a, b) => a.order - b.order);
-        setSectionImages(sortedSection);
-
-        const sectionImageIds = new Set(sortedSection.map((x) => x.imageId));
-        const available = all.filter((img) => !sectionImageIds.has(img.id));
-        setAvailableImages(available);
-
-        // reset selection à l'ouverture (évite les incohérences)
-        setChecked([]);
-      } catch (error) {
-        console.error("Erreur lors du chargement des images:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchImages();
-  }, [open, sectionId]);
 
   const ORDER_STEP = 1000;
   const reindexOrders = (items) =>
@@ -148,8 +116,8 @@ export default function useImageTransfer({ sectionId, open }) {
       api
         .patch("sections-images/", {
           idSection: sectionId,
-          changeWith : prevItem.imageId,
-          idImageToChangeOrder : currentItem.imageId,
+          changeWith: prevItem.imageId,
+          idImageToChangeOrder: currentItem.imageId,
           typeMove: "up",
         })
         .then((res) => {
@@ -183,32 +151,102 @@ export default function useImageTransfer({ sectionId, open }) {
 
 
   const moveRightItemDown = (index) => {
-  setSectionImages((prev) => {
-    if (index < 0 || index >= prev.length - 1) return prev;
-    const copy = [...prev];
-    [copy[index], copy[index + 1]] = [copy[index + 1], copy[index]];
-    const newItems = reindexOrders(copy);
+    setSectionImages((prev) => {
+      if (index < 0 || index >= prev.length - 1) return prev;
+      const copy = [...prev];
+      [copy[index], copy[index + 1]] = [copy[index + 1], copy[index]];
+      const newItems = reindexOrders(copy);
 
-    // Mise à jour optimiste + appel PATCH pour persister l'ordre
-    const betweenSectionImages = newItems.map((it) => it.id);
-    const idImageToChangeOrder = newItems[index + 1]?.id;
+      // Mise à jour optimiste + appel PATCH pour persister l'ordre
+      const betweenSectionImages = newItems.map((it) => it.id);
+      const idImageToChangeOrder = newItems[index + 1]?.id;
 
+      setLoading(true);
+      api
+        .patch("sections-images/", {
+          idSection: sectionId,
+          betweenSectionImages,
+          idImageToChangeOrder,
+        })
+        .then(() => setLoading(false))
+        .catch((err) => {
+          console.error("Erreur lors du reordonnancement:", err);
+          setLoading(false);
+        });
+
+      return newItems;
+    });
+  };
+
+  /* New Reorder Method (DnD) */
+  const reorderSectionImages = (newOrderItems) => {
+    // 1. Optimistic Update
+    // We must ensure 'order' property is updated locally to avoid jumping if we re-render sorted
+    // But since we control the array order in 'sectionImages', just setting it is enough for display
+    // if the list renders based on array index.
+    // Ideally we re-assign 'order' values locally too.
+    const reindexed = newOrderItems.map((item, index) => ({
+      ...item,
+      order: (index + 1) * 1000
+    }));
+
+    setSectionImages(reindexed);
+
+    // 2. Call API
     setLoading(true);
+    const orderedImageIds = reindexed.map((it) => it.imageId);
+
     api
       .patch("sections-images/", {
         idSection: sectionId,
-        betweenSectionImages,
-        idImageToChangeOrder,
+        orderedImageIds,
       })
-      .then(() => setLoading(false))
+      .then(() => {
+        // success
+      })
       .catch((err) => {
-        console.error("Erreur lors du reordonnancement:", err);
+        console.error("Erreur lors du réordonnancement (DnD):", err);
+        // On pourrait recharger la liste ou revert
+      })
+      .finally(() => {
         setLoading(false);
       });
+  };
 
-    return newItems;
-  });
-};
+  const fetchImages = async () => {
+    if (!open) return;
+    setLoading(true);
+    try {
+      const [allResponse, sectionResponse] = await Promise.all([
+        api.get("images"),
+        api.get(`sections-images/${sectionId}`),
+      ]);
+
+      const all = allResponse.data ?? [];
+      const section = sectionResponse.data ?? [];
+
+      setAllImages(all);
+      const sortedSection = [...section].sort((a, b) => a.order - b.order);
+      setSectionImages(sortedSection);
+
+      const sectionImageIds = new Set(sortedSection.map((x) => x.imageId));
+      const available = all.filter((img) => !sectionImageIds.has(img.id));
+      setAvailableImages(available);
+
+      // reset selection à l'ouverture (évite les incohérences)
+      setChecked([]);
+    } catch (error) {
+      console.error("Erreur lors du chargement des images:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (open) {
+      fetchImages();
+    }
+  }, [open, sectionId]);
 
   return {
     loading,
@@ -226,5 +264,7 @@ export default function useImageTransfer({ sectionId, open }) {
     setSectionImages, // optionnel
     moveRightItemUp,
     moveRightItemDown,
+    reorderSectionImages,
+    refetch: fetchImages, // <--- Exposed for external reload
   };
 }

@@ -52,6 +52,13 @@ export default function Upload() {
     setRows((prevRows) => [...prevRows, newSection]);
   }
 
+  const deleteRow = (id) => {
+    setLoading(true);
+    api.delete(`sections/${id}`).then(() => {
+      setRows((prevRows) => prevRows.filter((row) => row.id !== id));
+    }).finally(() => setLoading(false));
+  };
+
 
   return loading ? (
     <div style={{ display: "flex", justifyContent: "center", padding: 50 }}>
@@ -73,7 +80,7 @@ export default function Upload() {
         <input type={"file"} accept={"image/*"} hidden onChange={handleFileChange} multiple />
         Upload Images
       </Button>
-      <SectionsTable rows={rows} onManage={handleManage} addRow={addRow} />
+      <SectionsTable rows={rows} onManage={handleManage} addRow={addRow} onDelete={deleteRow} />
 
     </Stack>
   );

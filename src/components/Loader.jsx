@@ -1,7 +1,7 @@
 import React from "react";
 import { Box, CircularProgress, Typography } from "@mui/material";
 
-const Loader = ({ text = "Chargement...", size = 50, color = "primary" }) => {
+const Loader = ({ text = null, size = 50, color = "primary" }) => {
     return (
         <Box
             display="flex"

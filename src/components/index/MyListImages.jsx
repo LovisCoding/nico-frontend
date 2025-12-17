@@ -1,9 +1,10 @@
-import  {ImageList, ImageListItem} from "@mui/material";
+import { ImageList, ImageListItem } from "@mui/material";
 import Zoom from "react-medium-image-zoom";
-import {useEffect} from "react";
+import { useEffect } from "react";
 
 export default function MyListImages({ images, isXs, setLoading, loading }) {
     useEffect(() => {
+        if (!images) return;
         const promises = images.map(
             src =>
                 new Promise(resolve => {
@@ -14,16 +15,19 @@ export default function MyListImages({ images, isXs, setLoading, loading }) {
         );
 
         Promise.all(promises).then(() => setLoading(false));
-    },[images]);
+    }, [images, setLoading]);
+
+    if (!images) return null;
+
     return (
         <ImageList variant="masonry" cols={isXs ? 2 : 3} gap={8}>
-          {!loading && images.map((url, index) => (
-            <Zoom>
-            <ImageListItem key={index}>
-                <img src={url} alt="" loading="lazy" />
-            </ImageListItem>
-            </Zoom>
-          ))}
+            {!loading && images.map((url, index) => (
+                <Zoom>
+                    <ImageListItem key={index}>
+                        <img src={url} alt="" loading="lazy" />
+                    </ImageListItem>
+                </Zoom>
+            ))}
         </ImageList>
     );
 }

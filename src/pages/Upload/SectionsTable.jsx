@@ -11,16 +11,19 @@ import {
   TableFooter,
   TextField,
   Box,
+  IconButton,
+  Tooltip,
 } from "@mui/material";
 import api from '../../lib/api.js';
+import { PiGear, PiTrash } from "react-icons/pi";
 
-export default function SectionsTable({ rows, onManage, addRow }) {
+export default function SectionsTable({ rows, onManage, addRow, onDelete }) {
   const [newTitle, setNewTitle] = React.useState("");
 
   const handleCreate = () => {
     const title = newTitle.trim();
     if (!title) return;
-    api.post("/sections", {title}).then((response) => {
+    api.post("/sections", { title }).then((response) => {
       const newSection = response.data;
       addRow(newSection);
     })
@@ -42,9 +45,24 @@ export default function SectionsTable({ rows, onManage, addRow }) {
             <TableRow key={row.id} hover>
               <TableCell>{row.title}</TableCell>
               <TableCell align="right">
-                <Button size="small" variant="outlined" onClick={() => onManage(row)}>
-                  Gérer
-                </Button>
+                <Tooltip title="Gérer">
+                  <IconButton color="primary" onClick={() => onManage(row)}>
+                    <PiGear />
+                  </IconButton>
+                </Tooltip>
+
+                <Tooltip title="Supprimer">
+                  <IconButton
+                    color="error"
+                    onClick={() => {
+                      if (window.confirm('Voulez-vous vraiment supprimer cette section ?')) {
+                        onDelete(row.id)
+                      }
+                    }}
+                  >
+                    <PiTrash />
+                  </IconButton>
+                </Tooltip>
               </TableCell>
             </TableRow>
           ))}
