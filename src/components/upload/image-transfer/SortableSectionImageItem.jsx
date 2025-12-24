@@ -8,9 +8,11 @@ import {
     ListItemText,
     Checkbox,
     IconButton,
+    ListItemAvatar,
+    Avatar,
 } from '@mui/material';
 import { PiDotsSixVertical } from 'react-icons/pi';
-import { toDisplayImage, getUniqueId } from './transferUtils.js';
+import { toDisplayImage, getUniqueId, formatImageUrl, getFilenameFromUrl } from './transferUtils.js';
 
 export default function SortableSectionImageItem({ item, checked, onToggle, showOrder }) {
     const uniqueId = getUniqueId(item);
@@ -66,6 +68,16 @@ export default function SortableSectionImageItem({ item, checked, onToggle, show
                         inputProps={{ 'aria-labelledby': labelId }}
                     />
                 </ListItemIcon>
+
+                <ListItemAvatar>
+                    <Avatar
+                        variant="square"
+                        src={formatImageUrl(image?.url)}
+                        alt={image?.title}
+                        sx={{ width: 50, height: 50, mr: 1, borderRadius: 1 }}
+                    />
+                </ListItemAvatar>
+
                 <ListItemText
                     id={labelId}
                     primary={
@@ -75,10 +87,9 @@ export default function SortableSectionImageItem({ item, checked, onToggle, show
                                     {item.order}
                                 </span>
                             )}
-                            {image?.url}
+                            {getFilenameFromUrl(image?.url)}
                         </>
                     }
-                    secondary={image?.title || `ID: ${image?.id}`}
                 />
             </ListItemButton>
         </ListItem>

@@ -1,8 +1,8 @@
 // src/components/image-transfer/ImageTransferList.jsx
 import React from "react";
-import { Card, CardHeader, Divider, List, ListItem, ListItemIcon, ListItemText, Checkbox, IconButton } from "@mui/material";
+import { Card, CardHeader, Divider, List, ListItem, ListItemIcon, ListItemText, Checkbox, IconButton, ListItemAvatar, Avatar } from "@mui/material";
 import { PiTrash } from "react-icons/pi";
-import { getUniqueId, toDisplayImage } from "./transferUtils.js";
+import { getUniqueId, toDisplayImage, formatImageUrl, getFilenameFromUrl } from "./transferUtils.js";
 
 export default function ImageTransferList({
   title,
@@ -46,6 +46,15 @@ export default function ImageTransferList({
                 />
               </ListItemIcon>
 
+              <ListItemAvatar>
+                <Avatar
+                  variant="square"
+                  src={formatImageUrl(image?.url)}
+                  alt={image?.title}
+                  sx={{ width: 50, height: 50, mr: 1, borderRadius: 1 }}
+                />
+              </ListItemAvatar>
+
               <ListItemText
                 id={labelId}
                 primary={
@@ -55,10 +64,9 @@ export default function ImageTransferList({
                         {value.order}
                       </span>
                     )}
-                    {image?.url}
+                    {getFilenameFromUrl(image?.url)}
                   </>
                 }
-                secondary={image?.title || `ID: ${image?.id}`}
               />
               {onDelete && (
                 <IconButton

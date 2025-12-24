@@ -17,7 +17,7 @@ import ImageTransferList from "./ImageTransferList.jsx";
 import SectionImagesReorderList from './SectionImagesReorderList.jsx';
 import api from "../../../lib/api.js";
 
-export default function ImageTransferDialog({ sectionId, open, onClose, onSave }) {
+export default function ImageTransferDialog({ sectionId, sectionTitle, open, onClose, onSave }) {
   const {
     loading,
     checked,
@@ -70,7 +70,7 @@ export default function ImageTransferDialog({ sectionId, open, onClose, onSave }
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth="lg" fullWidth>
-      <DialogTitle>Gérer les images de la section {sectionId}</DialogTitle>
+      <DialogTitle>Gérer les images de la section "{sectionTitle}"</DialogTitle>
 
       <DialogContent dividers>
         {loading ? (
