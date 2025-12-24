@@ -11,7 +11,8 @@ export default function Login() {
     const [error, setError] = useState('');
     const navigate = useNavigate();
 
-    const handleLogin = async () => {
+    const handleLogin = async (e) => {
+        if (e) e.preventDefault();
         try {
             const res = await api.post(`auth/login`, { name: email, password });
             localStorage.setItem('token', res.data.access_token);
@@ -23,41 +24,79 @@ export default function Login() {
     };
 
     return (
-      <Container maxWidth="sm" sx={{ minHeight: '100vh', display: 'flex', alignItems: 'center' }}>
-          <Paper elevation={3} sx={{ width: '100%', padding: 4, borderRadius: 2 }}>
-              <Typography variant="h5" align="center" marginBottom={3}>
-                  Connexion
-              </Typography>
+        <Box
+            sx={{
+                minHeight: '100vh',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                bgcolor: 'background.default'
+            }}
+        >
+            <Container maxWidth="xs">
+                <Paper
+                    elevation={6}
+                    sx={{
+                        p: 4,
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                        borderRadius: 3
+                    }}
+                >
+                    <Box
+                        component="img"
+                        src="/logo.png"
+                        alt="Logo"
+                        sx={{ width: 80, height: 'auto', mb: 2 }}
+                    />
 
-              {error && (
-                <Alert severity="error" sx={{ marginBottom: 2 }}>
-                    {error}
-                </Alert>
-              )}
+                    <Typography component="h1" variant="h5" sx={{ mb: 3, fontWeight: 600 }}>
+                        Connexion
+                    </Typography>
 
-              <Box display="flex" flexDirection="column" gap={2}>
-                  <TextField
-                    label="Email"
-                    variant="outlined"
-                    value={email}
-                    onChange={e => setEmail(e.target.value)}
-                    fullWidth
-                  />
+                    {error && (
+                        <Alert severity="error" sx={{ width: '100%', mb: 2 }}>
+                            {error}
+                        </Alert>
+                    )}
 
-                  <TextField
-                    label="Mot de passe"
-                    type="password"
-                    variant="outlined"
-                    value={password}
-                    onChange={e => setPassword(e.target.value)}
-                    fullWidth
-                  />
-
-                  <Button variant="contained" fullWidth onClick={handleLogin}>
-                      Se connecter
-                  </Button>
-              </Box>
-          </Paper>
-      </Container>
+                    <Box component="form" onSubmit={handleLogin} sx={{ mt: 1, width: '100%' }}>
+                        <TextField
+                            margin="normal"
+                            required
+                            fullWidth
+                            id="email"
+                            label="Email / Nom d'utilisateur"
+                            name="email"
+                            autoComplete="email"
+                            autoFocus
+                            value={email}
+                            onChange={e => setEmail(e.target.value)}
+                        />
+                        <TextField
+                            margin="normal"
+                            required
+                            fullWidth
+                            name="password"
+                            label="Mot de passe"
+                            type="password"
+                            id="password"
+                            autoComplete="current-password"
+                            value={password}
+                            onChange={e => setPassword(e.target.value)}
+                        />
+                        <Button
+                            type="submit"
+                            fullWidth
+                            variant="contained"
+                            sx={{ mt: 3, mb: 2, py: 1.5, fontSize: '1rem' }}
+                        >
+                            Se connecter
+                        </Button>
+                    </Box>
+                </Paper>
+            </Container>
+        </Box>
     );
 }
