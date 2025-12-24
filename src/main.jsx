@@ -2,6 +2,7 @@ import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { BrowserRouter, Route, Routes } from 'react-router';
 import { createTheme, CssBaseline, ThemeProvider } from '@mui/material';
+import { HelmetProvider } from 'react-helmet-async';
 import App from './pages/App.jsx';
 import 'react-medium-image-zoom/dist/styles.css'
 import Login from './pages/Login.jsx';
@@ -30,15 +31,17 @@ const theme = createTheme({
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <ThemeProvider theme={theme}>
-      <CssBaseline/>
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<App />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/upload" element={<Upload/>} />
-          <Route path="/shooting" element={<Shooting/>} />
-        </Routes>
-      </BrowserRouter>
+      <CssBaseline />
+      <HelmetProvider>
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<App />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/upload" element={<Upload />} />
+            <Route path="/shooting" element={<Shooting />} />
+          </Routes>
+        </BrowserRouter>
+      </HelmetProvider>
     </ThemeProvider>
   </StrictMode>,
 )

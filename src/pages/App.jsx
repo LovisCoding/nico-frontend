@@ -5,6 +5,7 @@ import HeaderMd from '../components/index/HeaderMd.jsx';
 import HeaderSm from '../components/index/HeaderSm.jsx';
 import MyListImages from '../components/index/MyListImages.jsx';
 import api from '../lib/api.js';
+import SEO from '../components/SEO.jsx';
 
 export default function App() {
     const [images, setImages] = useState(null);
@@ -29,6 +30,7 @@ export default function App() {
 
     return (
         <>
+            <SEO title="Accueil" />
             {loading && <Loader />}
             <Grid container>
                 {!isSm ? (

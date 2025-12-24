@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { Container, Paper, TextField, Typography, Button, Box, Alert } from '@mui/material';
 import { useNavigate } from 'react-router';
 import api from '../lib/api.js';
+import SEO from '../components/SEO.jsx';
 
 export default function Login() {
     const [email, setEmail] = useState('');
@@ -33,6 +34,7 @@ export default function Login() {
                 bgcolor: 'background.default'
             }}
         >
+            <SEO title="Connexion" description="Connectez-vous pour accéder à l'administration." />
             <Container maxWidth="xs">
                 <Paper
                     elevation={6}

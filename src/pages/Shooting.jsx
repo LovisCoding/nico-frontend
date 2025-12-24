@@ -13,6 +13,7 @@ import axios from "axios";
 import Zoom from "react-medium-image-zoom";
 import HeaderMd from "../components/index/HeaderMd.jsx";
 import HeaderSm from "../components/index/HeaderSm.jsx";
+import SEO from "../components/SEO.jsx";
 
 export default function Shooting() {
   const theme = useTheme();
@@ -22,7 +23,6 @@ export default function Shooting() {
   const [data, setData] = useState([]);
 
   useEffect(() => {
-    document.title = "Nicolas Edet - Shooting";
     axios
       .get("/api/sections/shootings")
       .then((r) => setData(Array.isArray(r.data) ? r.data : []))
@@ -38,6 +38,7 @@ export default function Shooting() {
 
   return (
     <>
+      <SEO title="Shooting" description="Découvrez mes dernières séances photos et projets artistiques." />
       <Grid container>
         {!isMdDown ? (
           <Grid size="auto">
