@@ -37,7 +37,7 @@ export default function Upload() {
   }
 
   const handleFileChange = async (event) => {
-    const files = event.target.files;
+    const files = Array.from(event.target.files);
     if (!files || files.length === 0) return;
 
     setUploadStatus({
@@ -47,6 +47,8 @@ export default function Upload() {
       currentFileName: "",
       progress: 0,
     });
+
+    const failedUploads = [];
 
     try {
       for (let i = 0; i < files.length; i++) {
@@ -60,24 +62,31 @@ export default function Upload() {
           progress: 0
         }));
 
-        const formData = new FormData();
-        formData.append("image", file);
+        try {
+          const formData = new FormData();
+          formData.append("image", file);
 
-        await api.post("/images", formData, {
-
-          onUploadProgress: (progressEvent) => {
-            const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
-            setUploadStatus(prev => ({
-              ...prev,
-              progress: percentCompleted
-            }));
-          },
-        });
+          await api.post("/images", formData, {
+            onUploadProgress: (progressEvent) => {
+              const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+              setUploadStatus(prev => ({
+                ...prev,
+                progress: percentCompleted
+              }));
+            },
+          });
+        } catch (error) {
+          console.error(`Upload failed for ${file.name}`, error);
+          failedUploads.push(file.name);
+        }
       }
     } catch (error) {
-      console.error("Upload failed", error);
-      // Optional: show error toast
+      console.error("Critical upload error", error);
     } finally {
+      if (failedUploads.length > 0) {
+        alert(`Erreur lors de l'upload des fichiers suivants : ${failedUploads.join(', ')}`);
+      }
+
       // Small delay to show completion before resetting
       setTimeout(() => {
         setUploadStatus({
