@@ -18,11 +18,12 @@ export default function App() {
                 api.get(`sections/name?name=Accueil`).then((res) => {
                     const paths = res.data.images.map(img => "/api/" + img.image.url);
                     setImages(paths);
-
+                    setLoading(false);
                 });
 
             } catch (err) {
                 console.error('Erreur chargement images', err);
+                setLoading(false);
             }
         };
         fetchImages();
@@ -45,7 +46,7 @@ export default function App() {
                     </Grid>
                 )}
                 <Grid size={isSm ? 12 : "grow"} px={2} pt={1}>
-                    <MyListImages images={images} isXs={isXs} setLoading={setLoading} loading={loading} />
+                    <MyListImages images={images} isXs={isXs} />
                 </Grid>
             </Grid>
         </>
