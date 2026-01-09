@@ -1,5 +1,5 @@
 import React from 'react';
-import { Helmet } from 'react-helmet-async';
+
 
 export default function SEO({
     title,
@@ -16,7 +16,7 @@ export default function SEO({
     const metaImage = image || '/logo.png'; // Fallback to logo or default og image
 
     return (
-        <Helmet>
+        <>
             {/* Standard metadata tags */}
             <title>{fullTitle}</title>
             <meta name='description' content={metaDescription} />
@@ -35,6 +35,6 @@ export default function SEO({
             <meta name="twitter:title" content={fullTitle} />
             <meta name="twitter:description" content={metaDescription} />
             <meta name="twitter:image" content={metaImage} />
-        </Helmet>
+        </>
     );
 }
