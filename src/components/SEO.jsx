@@ -9,7 +9,7 @@ export default function SEO({
     image,
     url
 }) {
-    const siteTitle = import.meta.env.VITE_APP_TITLE || 'Portfolio Arthur';
+    const siteTitle = import.meta.env.VITE_APP_TITLE || 'Portfolio Nicolas Edet';
     const fullTitle = title ? `${title} | ${siteTitle}` : siteTitle;
     const defaultDescription = "Portfolio de photographie et direction artistique.";
     const metaDescription = description || defaultDescription;
