@@ -18,7 +18,7 @@ export default function App() {
                 api.get(`sections/name?name=Accueil`).then((res) => {
                     const paths = res.data.images.map(img => "/api/" + img.image.url);
                     setImages(paths);
-                    setLoading(false);
+                    // Loading completion is now handled by MyListImages
                 });
 
             } catch (err) {
@@ -46,7 +46,7 @@ export default function App() {
                     </Grid>
                 )}
                 <Grid size={isSm ? 12 : "grow"} px={2} pt={1}>
-                    <MyListImages images={images} isXs={isXs} />
+                    <MyListImages images={images} isXs={isXs} setLoading={setLoading} loading={loading} />
                 </Grid>
             </Grid>
         </>
