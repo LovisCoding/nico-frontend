@@ -5,6 +5,7 @@ import HeaderMd from '../components/index/HeaderMd.jsx';
 import HeaderSm from '../components/index/HeaderSm.jsx';
 import MyListImages from '../components/index/MyListImages.jsx';
 import api from '../lib/api.js';
+import { formatImageUrl } from '../components/upload/image-transfer/transferUtils.js';
 import SEO from '../components/SEO.jsx';
 
 export default function App() {
@@ -16,7 +17,7 @@ export default function App() {
         const fetchImages = () => {
             try {
                 api.get(`sections/name?name=Accueil`).then((res) => {
-                    const paths = res.data.images.map(img => (import.meta.env.VITE_API_URL + img.image.url).replace(/\/$/, ''));
+                    const paths = res.data?.images?.map(img => formatImageUrl(img?.image?.url)).filter(Boolean) || [];
                     setImages(paths);
                     // Loading completion is now handled by MyListImages
                 });
