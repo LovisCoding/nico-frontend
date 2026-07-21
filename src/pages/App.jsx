@@ -16,7 +16,7 @@ export default function App() {
         const fetchImages = () => {
             try {
                 api.get(`sections/name?name=Accueil`).then((res) => {
-                    const paths = res.data.images.map(img => import.meta.env.VITE_API_URL + img.image.url);
+                    const paths = res.data.images.map(img => import.meta.env.VITE_API_URL + img.image.url).replace(/\/$/, '');
                     setImages(paths);
                     // Loading completion is now handled by MyListImages
                 });
