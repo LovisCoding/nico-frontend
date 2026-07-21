@@ -43,6 +43,6 @@ jobs:
           file: ./Dockerfile
           push: true
           build-args: |
-            VITE_API_URL=${{ vars.VITE_API_URL || secrets.VITE_API_URL }}
+            VITE_API_URL=${{ vars.VITE_API_URL || secrets.VITE_API_URL || '' }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
